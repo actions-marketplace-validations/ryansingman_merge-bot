@@ -1,0 +1,48 @@
+name: "ryansingman/merge-bot"
+description: "Deployment merge handler."
+author: "Ryan Singman @ Cleanlab"
+inputs:
+  reviews_required: 
+    description: "if reviews are required to merge"
+    required: false
+    default: true
+  dependent_checks:
+    description: "comma separated list of checks to depend on"
+    required: false
+    default: ""
+  check_status_required:
+    description: "status value(s) for check to be considered passed (as comma separated list)"
+    required: false
+    default: "success"
+  blocking_label:
+    description: "label to block merge on (leave empty to disable behavior)"
+    required: false
+    default: ""
+  delete_branch:
+    description: "if should delete source branch of PR after successful merge"
+    required: false
+    default: false
+  merge_type:
+    description: "type of merge to use (merge or fast-forward)"
+    required: true
+  
+
+runs:
+  using: composite
+  
+  # todo: set needs (dependent checks)
+
+  steps:
+    # checkout <source> branch of repo
+    - uses: actions/checkout@v3
+      with:
+        ref: ${{ inputs.source }}
+        
+    # if blocking label, do not merge
+
+    # if reviews_required, check all reviews are passing
+
+    # if dependent checks, check all checks have required check status
+
+    # merge PR using merge type
+        
