@@ -19,6 +19,7 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
 
+    print(args.labels)
     labels: List[str] = json.loads(args.labels)
 
     if args.blocking_label in labels:
