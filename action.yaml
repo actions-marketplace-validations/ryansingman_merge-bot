@@ -33,12 +33,7 @@ runs:
   # todo: set needs (dependent checks)
 
   steps:
-    # checkout <source> branch of repo
-    - uses: actions/checkout@v3
-      with:
-        ref: ${{ inputs.source }}
-        
-    # if blocking label, do not merge
+    if: contains(github.event.pull_request.labels.*.name, ${{ inputs.blocking_label }})
 
     # if reviews_required, check all reviews are passing
 
