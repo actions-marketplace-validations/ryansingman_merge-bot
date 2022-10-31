@@ -28,6 +28,7 @@ def check_statuses_of_checks(checks: List[str], repository: str, head_sha: str, 
     assert gh_api_response.status_code == 200, "Bad response from GitHub checks API."
 
     response_dict: Dict = gh_api_response.json()
+    print(response_dict)
 
     checks_passed: Dict[str, bool] = {check: False for check in checks}
     for check_response in response_dict.get("check_runs"):
