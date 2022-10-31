@@ -51,7 +51,7 @@ runs:
       run: |
         GITHUB_TOKEN=${{ github.token }} \
         python $GITHUB_ACTION_PATH/merge_bot/check_review_approval.py \
-        --repository ${{ github.repository }}
+        --repository ${{ github.repository }} \
         --pull-request-number ${{ github.event.number }}
       shell: bash
 
