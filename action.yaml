@@ -64,4 +64,5 @@ runs:
       run: |
         echo "Deleting source branch: ${{ github.event.pull_request.head_ref }}"
 #        git push --delete origin ${{ github.event.pull_request.head_ref }}
+      shell: bash
         
