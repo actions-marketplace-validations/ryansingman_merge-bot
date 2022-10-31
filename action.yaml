@@ -31,6 +31,11 @@ runs:
   using: composite
 
   steps:
+    # TODO REMOVE debug
+    - run: |
+          echo "${{ toJson(github.event.pull_request.labels.*.name) }}"
+      shell: bash
+
     - if: |
         contains(github.event.pull_request.labels.*.name, github.event.inputs.blocking_label)
       run: |
