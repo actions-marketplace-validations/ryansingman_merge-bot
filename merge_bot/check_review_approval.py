@@ -26,6 +26,8 @@ def get_reviewer_approvals(repository: str, pull_request_number: str) -> List[bo
     assert gh_api_response.status_code == 200, "Bad response from GitHub reviews API."
     
     response_list: List[Dict] = gh_api_response.json()
+    from pprint import pprint
+    pprint(response_list)
 
     # get latest review status from each reviewer
     # note: reviews are returned in chronological order
