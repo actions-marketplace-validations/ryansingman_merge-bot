@@ -32,10 +32,7 @@ runs:
 
   steps:
     - if: |
-        ${{
-          github.event.inputs.blocking_label != null &&
-          contains(github.event.pull_request.labels.*.name, github.event.inputs.blocking_label)
-        }}
+        contains(github.event.pull_request.labels.*.name, github.event.inputs.blocking_label)
       run: |
         echo "Stopping merge, blocking label detected."
         exit 1
