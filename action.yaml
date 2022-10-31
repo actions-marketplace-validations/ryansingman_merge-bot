@@ -17,7 +17,7 @@ inputs:
   blocking_label:
     description: "label to block merge on (leave empty to disable behavior)"
     required: false
-    default: null
+    default: ""
   delete_branch:
     description: "if should delete source branch of PR after successful merge"
     required: false
@@ -34,7 +34,7 @@ runs:
     # TODO REMOVE debug
     - run: |
           echo "${{ toJson(github.event.pull_request.labels.*.name) }}"
-          echo "${{ github.event.inputs.blocking_label }}"
+          echo "${{ inputs.blocking_label }}"
       shell: bash
 
     - if: |
