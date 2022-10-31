@@ -25,11 +25,11 @@ def get_requested_reviewers(repository: str, pull_request_number: str) -> List[s
 
     assert gh_api_response.status_code == 200, "Bad response from GitHub requested reviewers API."
     
-    response_list: List[Dict] = gh_api_response.json()
+    response_dict: Dict[List[Dict]] = gh_api_response.json()
 
     return [
         reviewer.get("login")
-        for reviewer in response_list
+        for reviewer in response_dict.get("users")
     ]
 
 
