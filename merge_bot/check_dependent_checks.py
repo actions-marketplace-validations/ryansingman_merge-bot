@@ -43,7 +43,7 @@ def check_statuses_of_checks(checks: List[str], repository: str, head_sha: str, 
 
         checks_passed.append(check_passed)
 
-    return all(check_passed)
+    return all(checks_passed)
 
 
 if __name__ == "__main__":
