@@ -52,7 +52,7 @@ runs:
         GITHUB_TOKEN=${{ github.token }} \
         python $GITHUB_ACTION_PATH/merge_bot/check_review_approval.py \
         --repository ${{ github.repository }} \
-        --pull-request-number ${{ github.event.number }}
+        --pull-request-number ${{ github.event.pull_request.number }}
       shell: bash
 
     # if dependent checks, check all checks have required check status
