@@ -49,6 +49,7 @@ runs:
         python $GITHUB_ACTION_PATH/merge_bot/check_review_approval.py \
         --repository ${{ github.repository }}
         --pr-number ${{ github.event.number }}
+      shell: bash
 
     # if dependent checks, check all checks have required check status
 
