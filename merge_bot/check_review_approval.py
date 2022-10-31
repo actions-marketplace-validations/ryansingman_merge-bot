@@ -8,12 +8,37 @@ REVIEW_APPROVED: str = "APPROVED"
 GITHUB_TOKEN: str = os.getenv("GITHUB_TOKEN")
 
 
-def get_reviewer_approvals(repository: str, pull_request_number: str) -> List[bool]:
+def get_requested_reviewers(repository: str, pull_request_number: str) -> List[str]:
+    """Gets requested reviewers for PR.
+
+    :param repository: repository to get PR from
+    :param pull_request_number: PR to get requested reviewers for
+    :return: list of logins of requested reviewers
+    """
+    gh_api_response: requests.Response = requests.get(
+        f"https://api.github.com/repos/{repository}/pulls/{pull_request_number}/requested_reviewers",
+        headers={
+            "Authorization": f"Bearer {GITHUB_TOKEN}",
+            "Accept": "application/vnd.github+json",
+        }
+    )
+
+    assert gh_api_response.status_code == 200, "Bad response from GitHub requested reviewers API."
+    
+    response_list: List[Dict] = gh_api_response.json()
+
+    return [
+        reviewer.get("login")
+        for reviewer in response_list
+    ]
+
+
+def get_reviewer_approvals(repository: str, pull_request_number: str) -> Dict[str, bool]:
     """Gets list of reviewer approvals for PR.
 
     :param repository: repository to get PR from
     :param pull_request_number: PR to get approvals from
-    :return: list of reviewer approval statuses for PR
+    :return: dict of reviewer, reviewer approval statuses for PR
     """
     gh_api_response: requests.Response = requests.get(
         f"https://api.github.com/repos/{repository}/pulls/{pull_request_number}/reviews",
@@ -29,20 +54,16 @@ def get_reviewer_approvals(repository: str, pull_request_number: str) -> List[bo
 
     # get latest review status from each reviewer
     # note: reviews are returned in chronological order
-    reviews_by_reviewer: Dict[str, str] = {}
+    reviews_by_reviewer: Dict[str, bool] = {}
     for review in response_list:
-        reviews_by_reviewer[review.get("user").get("login")] = review.get("state")
-
-    # return if each reviewer has approved the PR
-    review_statuses: List[bool] = []
-    for reviewer, status in reviews_by_reviewer.items():
-        approved: bool = status == REVIEW_APPROVED
+        approved: bool = review.get("state") == REVIEW_APPROVED
+        reviewer: str = review.get("user").get("login")
         if not approved:
             print(f"No approval by reviewer: {reviewer}")
 
-        review_statuses.append(approved)
+        reviews_by_reviewer[review.get("user").get("login")] = approved
 
-    return review_statuses
+    return reviews_by_reviewer
 
 if __name__ == "__main__":
 
@@ -61,11 +82,27 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
 
-    # get reviewer approvals
-    reviewer_approvals: List[bool] = get_reviewer_approvals(
+    # get requested reviewers
+    requested_reviewers: List[str] = get_reviewer_approvals(
         args.repository,
         args.pull_request_number,
     )
+
+    # get reviewer approvals
+    reviewer_approvals: Dict[str, bool] = get_reviewer_approvals(
+        args.repository,
+        args.pull_request_number,
+    )
+
+    # exit w/ non-zero code if not all requested reviewers have reviewed
+    all_requested_reviewers_have_reviewed: bool = True
+    for requested_reviewer in requested_reviewers:
+        if not requested_reviewer in reviewer_approvals:
+            print(f"Requested reviewer {requested_reviewer} has not reviewed.")
+            all_requested_reviewers_have_reviewed = False
+
+    if not all_requested_reviewers_have_reviewed:
+        exit(1)
 
     # exit w/ non-zero code if not all reviewers approve
     if not all(reviewer_approvals):
