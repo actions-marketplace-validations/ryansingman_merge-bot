@@ -8,17 +8,17 @@ import requests
 GITHUB_TOKEN: str = os.getenv("GITHUB_TOKEN")
 
 
-def check_statuses_of_checks(checks: List[str], repository: str, head_sha: str, passing_statuses: List[str]) -> bool:
+def check_statuses_of_checks(checks: List[str], repository: str, branch: str, passing_statuses: List[str]) -> bool:
     """Returns true if all checks have passing check status.
 
     :param checks: checks to check status for
     :param repository: repository to check statuses for
-    :param head_sha: head SHA to get check status for
+    :param branch: branch to get check status for
     :param passing_statuses: list of passing statuses for checks
     :return: true if all checks have passing check status
     """
     gh_api_response: requests.Response = requests.get(
-        f"https://api.github.com/repos/{repository}/commits/{head_sha}/check-runs",
+        f"https://api.github.com/repos/{repository}/commits/{branch}/check-runs",
         headers={
             "Authorization": f"Bearer {GITHUB_TOKEN}",
             "Accept": "application/vnd.github+json",
@@ -29,7 +29,7 @@ def check_statuses_of_checks(checks: List[str], repository: str, head_sha: str, 
 
     response_dict: Dict = gh_api_response.json()
 
-    checks_passed: List[bool] = []
+    checks_passed: Dict[str, bool] = {check: False for check in checks}
     for check_response in response_dict.get("check_runs"):
         check_name = check_response.get("name")
         if check_name not in checks:
@@ -43,7 +43,7 @@ def check_statuses_of_checks(checks: List[str], repository: str, head_sha: str, 
 
         checks_passed.append(check_passed)
 
-    return all(checks_passed)
+    return all(checks_passed.values())
 
 
 if __name__ == "__main__":
@@ -60,9 +60,8 @@ if __name__ == "__main__":
         help="repository to find check statuses for",
     )
     parser.add_argument(
-        "--head-sha",
-        dest="head_sha",
-        help="head SHA to get check statuses for",
+        "--branch",
+        help="branch to get check statuses for",
     )
     parser.add_argument(
         "--passing-check-statuses",
@@ -75,5 +74,5 @@ if __name__ == "__main__":
     checks: List[str] = args.checks.split(",")
     passing_statuses: List[str] = args.passing_check_statuses.split(",")
 
-    if not check_statuses_of_checks(checks, args.repository, args.head_sha, passing_statuses):
+    if not check_statuses_of_checks(checks, args.repository, args.branch, passing_statuses):
         exit(1)
