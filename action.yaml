@@ -67,6 +67,18 @@ runs:
       shell: bash
 
     # merge PR using merge type
+    - run: |
+        case "${{ inputs.merge_type }}" in
+          "fast-forward")
+            echo "Performing fast-forward merge."
+            ;;
+          "merge")
+            echo "Performing merge."
+            ;;
+          *)
+            echo "Invalid merge type: ${{ inputs.merge_type }}"
+            exit 1
+        esac
 
     # if delete source branch, delete branch
     - if: success() && ${{ inputs.delete_branch }}
