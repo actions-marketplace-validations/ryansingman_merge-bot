@@ -31,14 +31,8 @@ runs:
   using: composite
 
   steps:
-    # TODO REMOVE debug
-    - run: |
-          echo "${{ toJson(github.event.pull_request.labels.*.name) }}"
-          echo "${{ inputs.blocking_label }}"
-      shell: bash
-
     - if: |
-        contains(github.event.pull_request.labels.*.name, github.event.inputs.blocking_label)
+        contains(github.event.pull_request.labels.*.name, inputs.blocking_label)
       run: |
         echo "Stopping merge, blocking label detected."
         exit 1
