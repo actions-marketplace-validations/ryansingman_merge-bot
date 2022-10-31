@@ -33,7 +33,11 @@ runs:
   # todo: set needs (dependent checks)
 
   steps:
-    if: contains(github.event.pull_request.labels.*.name, ${{ inputs.blocking_label }})
+    - if: contains(github.event.pull_request.labels.*.name, ${{ inputs.blocking_label }})
+      run: |
+        echo "Stopping merge, blocking label detected."
+        exit 0
+      shell: bash
 
     # if reviews_required, check all reviews are passing
 
