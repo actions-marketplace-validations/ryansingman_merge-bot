@@ -17,7 +17,7 @@ inputs:
   blocking_label:
     description: "label to block merge on (leave empty to disable behavior)"
     required: false
-    default: ""
+    default: null
   delete_branch:
     description: "if should delete source branch of PR after successful merge"
     required: false
