@@ -63,7 +63,7 @@ runs:
         --checks ${{ inputs.dependent_checks }} \
         --repository ${{ github.repository }} \
         --head-sha ${{ github.sha }} \
-        --allowable-check-statuses ${{ inputs.check_status_required }}
+        --passing-check-statuses ${{ inputs.check_status_required }}
       shell: bash
 
     # merge PR using merge type

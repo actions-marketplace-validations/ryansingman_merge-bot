@@ -8,14 +8,14 @@ import requests
 GITHUB_TOKEN: str = os.getenv("GITHUB_TOKEN")
 
 
-def check_statuses_of_checks(checks: List[str], repository: str, head_sha: str, acceptable_statuses: List[str]) -> bool:
-    """Returns true if all checks have acceptable check status.
+def check_statuses_of_checks(checks: List[str], repository: str, head_sha: str, passing_statuses: List[str]) -> bool:
+    """Returns true if all checks have passing check status.
 
     :param checks: checks to check status for
     :param repository: repository to check statuses for
     :param head_sha: head SHA to get check status for
-    :param acceptable_statuses: list of acceptable statuses for checks
-    :return: true if all checks have acceptable check status
+    :param passing_statuses: list of passing statuses for checks
+    :return: true if all checks have passing check status
     """
     gh_api_response: requests.Response = requests.get(
         f"https://api.github.com/repos/{repository}/commits/{head_sha}/check-runs",
@@ -36,7 +36,7 @@ def check_statuses_of_checks(checks: List[str], repository: str, head_sha: str, 
             continue
 
         check_status: str = check_response.get("conclusion")
-        check_passed: bool = check_status in acceptable_statuses
+        check_passed: bool = check_status in passing_statuses
 
         if not check_passed:
             print(f"Check {check_name} failed with status {check_status}")
@@ -65,15 +65,15 @@ if __name__ == "__main__":
         help="head SHA to get check statuses for",
     )
     parser.add_argument(
-        "--acceptable-check-statuses",
-        dest="acceptable_check_statuses",
-        help="list of acceptable check statuses, as comma separated list",
+        "--passing-check-statuses",
+        dest="passing_check_statuses",
+        help="list of passing check statuses, as comma separated list",
     )
 
     args = parser.parse_args()
 
     checks: List[str] = args.checks.split(",")
-    acceptable_statuses: List[str] = args.acceptable_check_statuses.split(",")
+    passing_statuses: List[str] = args.passing_check_statuses.split(",")
 
-    if not check_statuses_of_checks(checks, args.repository, args.head_sha, acceptable_statuses):
+    if not check_statuses_of_checks(checks, args.repository, args.head_sha, passing_statuses):
         exit(1)
