@@ -56,6 +56,15 @@ runs:
       shell: bash
 
     # if dependent checks, check all checks have required check status
+    - if: ${{ inputs.dependent_checks }}
+      run: |
+        GITHUB_TOKEN=${{ github.token }}
+        python $GITHUB_ACTION_PATH/merge_bot/check_dependent_checks.py \
+        --checks ${{ inputs.dependent_checks }} \
+        --repository ${{ github.repository }} \
+        --head-sha ${{ github.sha }} \
+        --allowable-check-statuses ${{ inputs.check_status_required }}
+      shell: bash
 
     # merge PR using merge type
 
