@@ -16,6 +16,7 @@ if __name__ == "__main__":
         "--labels",
         type=str,
         default="",
+        nargs="*",
         help="list of labels for PR, as comma delimited string",
     )
 
