@@ -8,17 +8,17 @@ import requests
 GITHUB_TOKEN: str = os.getenv("GITHUB_TOKEN")
 
 
-def check_statuses_of_checks(checks: List[str], repository: str, branch: str, passing_statuses: List[str]) -> bool:
+def check_statuses_of_checks(checks: List[str], repository: str, head_sha: str, passing_statuses: List[str]) -> bool:
     """Returns true if all checks have passing check status.
 
     :param checks: checks to check status for
     :param repository: repository to check statuses for
-    :param branch: branch to get check status for
+    :param head_sha: head SHA to get check status for
     :param passing_statuses: list of passing statuses for checks
     :return: true if all checks have passing check status
     """
     gh_api_response: requests.Response = requests.get(
-        f"https://api.github.com/repos/{repository}/commits/{branch}/check-runs",
+        f"https://api.github.com/repos/{repository}/commits/{head_sha}/check-runs",
         headers={
             "Authorization": f"Bearer {GITHUB_TOKEN}",
             "Accept": "application/vnd.github+json",
@@ -60,8 +60,9 @@ if __name__ == "__main__":
         help="repository to find check statuses for",
     )
     parser.add_argument(
-        "--branch",
-        help="branch to get check statuses for",
+        "--head-sha",
+        dest="head_sha",
+        help="head SHA to get check statuses for",
     )
     parser.add_argument(
         "--passing-check-statuses",
@@ -74,5 +75,5 @@ if __name__ == "__main__":
     checks: List[str] = args.checks.split(",")
     passing_statuses: List[str] = args.passing_check_statuses.split(",")
 
-    if not check_statuses_of_checks(checks, args.repository, args.branch, passing_statuses):
+    if not check_statuses_of_checks(checks, args.repository, args.head_sha, passing_statuses):
         exit(1)

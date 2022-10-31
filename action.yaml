@@ -62,7 +62,7 @@ runs:
         python $GITHUB_ACTION_PATH/merge_bot/check_dependent_checks.py \
         --checks ${{ inputs.dependent_checks }} \
         --repository ${{ github.repository }} \
-        --branch ${{ github.ref_name }} \
+        --head-sha ${{ github.sha }} \
         --passing-check-statuses ${{ inputs.check_status_required }}
       shell: bash
 
