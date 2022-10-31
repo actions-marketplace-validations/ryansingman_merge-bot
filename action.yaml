@@ -79,6 +79,7 @@ runs:
             echo "Invalid merge type: ${{ inputs.merge_type }}"
             exit 1
         esac
+      shell: bash
 
     # if delete source branch, delete branch
     - if: success() && ${{ inputs.delete_branch }}
