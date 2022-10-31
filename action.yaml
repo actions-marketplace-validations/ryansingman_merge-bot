@@ -17,7 +17,7 @@ inputs:
   blocking_label:
     description: "label to block merge on (leave empty to disable behavior)"
     required: false
-    default: null
+    default: ""
   delete_branch:
     description: "if should delete source branch of PR after successful merge"
     required: false
@@ -31,11 +31,14 @@ runs:
   using: composite
 
   steps:
-    - if: |
-        contains(github.event.pull_request.labels.*.name, inputs.blocking_label)
-      run: |
-        echo "Stopping merge, blocking label detected."
-        exit 1
+    - run: |
+        python $GITHUB_ACTION_PATH/merge_bot/check_blocking_label.py \
+        --blocking-label ${{ inputs.blocking_label }} \
+        --labels ${{ toJson(github.event.pull_request.labels.*.name) }} \
+        if [ $? -ne 0 ] then;
+          echo "Stopping merge, blocking label detected."
+          exit 1
+        fi
       shell: bash
 
     # install Python dependencies for action
