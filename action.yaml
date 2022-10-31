@@ -31,11 +31,7 @@ runs:
   using: composite
 
   steps:
-    - run: |
-        echo ${{ github.event.pull_request.labels.*.name }}
-      shell: bash
-
-    - if: contains(github.event.pull_request.labels.*.name, ${{ inputs.blocking_label }})
+    - if: contains(${{ github.event.pull_request.labels.*.name }}, ${{ inputs.blocking_label }})
       run: |
         echo "Stopping merge, blocking label detected."
         exit 1
