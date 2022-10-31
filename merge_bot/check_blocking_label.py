@@ -14,13 +14,13 @@ if __name__ == "__main__":
     )
     parser.add_argument(
         "--labels",
-        help="list of labels for PR, as JSON string",
+        type=str,
+        help="list of labels for PR, as comma delimited string",
     )
 
     args = parser.parse_args()
 
-    print(args.labels)
-    labels: List[str] = json.loads(args.labels)
+    labels: List[str] = args.labels.split(",")
 
     if args.blocking_label in labels:
         exit(1)
