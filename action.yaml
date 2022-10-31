@@ -62,7 +62,7 @@ runs:
     # if delete source branch, delete branch
     - if: success() && ${{ inputs.delete_branch }}
       run: |
-        echo "Deleting source branch: ${{ github.event.pull_request.head_ref }}"
-#        git push --delete origin ${{ github.event.pull_request.head_ref }}
+        echo "Deleting source branch: ${{ github.event.pull_request.head.ref }}"
+#        git push --delete origin ${{ github.event.pull_request.head.ref }}
       shell: bash
         
