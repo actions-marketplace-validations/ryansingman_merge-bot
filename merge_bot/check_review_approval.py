@@ -23,7 +23,7 @@ def get_reviewer_approvals(repository: str, pull_request_number: str) -> List[bo
         }
     )
 
-    print(gh_api_response.text)
+    print(gh_api_response.text, gh_api_response.url)
     assert gh_api_response.status_code == 200, "Bad response from GitHub reviews API."
     
     response_list: List[Dict] = gh_api_response.json()
