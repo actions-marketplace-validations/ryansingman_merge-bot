@@ -23,4 +23,5 @@ if __name__ == "__main__":
     labels: List[str] = args.labels.split(",")
 
     if args.blocking_label in labels:
+        print("Stopping merge, blocking label detected.")
         exit(1)
