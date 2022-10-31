@@ -58,4 +58,10 @@ runs:
     # if dependent checks, check all checks have required check status
 
     # merge PR using merge type
+
+    # if delete source branch, delete branch
+    - if: success() && ${{ inputs.delete_branch }}
+      run: |
+        echo "Deleting source branch: ${{ github.event.pull_request.head_ref }}"
+#        git push --delete origin ${{ github.event.pull_request.head_ref }}
         
