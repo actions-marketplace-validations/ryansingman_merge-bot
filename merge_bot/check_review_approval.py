@@ -23,7 +23,6 @@ def get_reviewer_approvals(repository: str, pull_request_number: str) -> List[bo
         }
     )
 
-    print(gh_api_response.text, gh_api_response.url)
     assert gh_api_response.status_code == 200, "Bad response from GitHub reviews API."
     
     response_list: List[Dict] = gh_api_response.json()
@@ -35,8 +34,15 @@ def get_reviewer_approvals(repository: str, pull_request_number: str) -> List[bo
         reviews_by_reviewer[review.get("user").get("login")] = review.get("state")
 
     # return if each reviewer has approved the PR
-    return [status == REVIEW_APPROVED for status in reviews_by_reviewer.values()]
+    review_statuses: List[bool] = []
+    for reviewer, status in reviews_by_reviewer.items():
+        approved: bool = status == REVIEW_APPROVED
+        if not approved:
+            print(f"No approval by reviewer: {reviewer}")
 
+        review_statuses.append(approved)
+
+    return review_statuses
 
 if __name__ == "__main__":
 
