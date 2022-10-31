@@ -15,6 +15,7 @@ if __name__ == "__main__":
     parser.add_argument(
         "--labels",
         type=str,
+        default="",
         help="list of labels for PR, as comma delimited string",
     )
 
