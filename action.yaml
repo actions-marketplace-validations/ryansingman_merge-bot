@@ -34,7 +34,7 @@ runs:
     - run: |
         python $GITHUB_ACTION_PATH/merge_bot/check_blocking_label.py \
         --blocking-label ${{ inputs.blocking_label }} \
-        --labels "${{ toJson(github.event.pull_request.labels.*.name) }}"
+        --labels "[${{ join(github.event.pull_request.labels.*.name) }}]"
         if [ $? -ne 0 ] then;
           echo "Stopping merge, blocking label detected."
           exit 1
