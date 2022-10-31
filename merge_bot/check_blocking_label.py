@@ -15,15 +15,14 @@ if __name__ == "__main__":
     parser.add_argument(
         "--labels",
         type=str,
-        default="",
+        default=[""],
         nargs="*",
-        help="list of labels for PR, as comma delimited string",
+        help="list of labels for PR",
     )
 
     args = parser.parse_args()
 
-    labels: List[str] = args.labels.split(",")
-
+    labels: List[str] = args.labels
     if args.blocking_label in labels:
         print("Stopping merge, blocking label detected.")
         exit(1)
