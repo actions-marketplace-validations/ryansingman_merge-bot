@@ -70,11 +70,6 @@ runs:
 
     # merge PR using merge type
     - run: |
-        if [ "${{ github.event.pull_request.mergeable }}" != "true" ]; then
-          echo "Pull request is not mergeable -- failing."
-          exit 1
-        fi
-
         case "${{ inputs.merge_type }}" in
           "fast-forward")
             echo "Attempting fast-forward merge."
@@ -93,6 +88,12 @@ runs:
             echo "Invalid merge type: ${{ inputs.merge_type }}"
             exit 1
         esac
+      shell: bash
+
+    # if failed to merge, print message
+    - if: failure()
+      run:
+        echo "Failed to merge -- exiting."
       shell: bash
 
     # if delete source branch, delete branch
