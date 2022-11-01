@@ -83,6 +83,14 @@ runs:
             ;;
           "merge")
             echo "Performing merge."
+            HEAD_REF='${{ github.event.pull_request.head.ref }}'; \
+            BASE_REF='${{ github.event.pull_request.base.ref }}'; \
+            git fetch --all && \
+            git checkout $BASE_REF && \
+            git pull && \
+            git merge origin/$HEAD_REF && \
+            git push
+            ;;
             ;;
           *)
             echo "Invalid merge type: ${{ inputs.merge_type }}"
