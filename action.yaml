@@ -76,8 +76,13 @@ runs:
         case "${{ inputs.merge_type }}" in
           "fast-forward")
             echo "Attempting fast-forward merge."
-            echo "source ref: ${{ github.event.pull_request.head.ref }}"
-            echo "target ref: ${{ github.event.pull_request.base.ref }}"
+            HEAD_REF=${{ github.event.pull_request.head.ref }} \
+            BASE_REF=${{ github.event.pull_request.base.ref }} \
+            git checkout $(BASE_REF) && \
+            git pull && \
+            git fetch origin $(HEAD_REF) && \
+            git merge --ff-only origin/$(HEAD_REF) && \
+            git push
             ;;
           "merge")
             echo "Performing merge."
@@ -92,6 +97,6 @@ runs:
     - if: success() && ${{ inputs.delete_branch }}
       run: |
         echo "Deleting source branch: ${{ github.event.pull_request.head.ref }}"
-#        git push --delete origin ${{ github.event.pull_request.head.ref }}
+        git push --delete origin ${{ github.event.pull_request.head.ref }}
       shell: bash
         
