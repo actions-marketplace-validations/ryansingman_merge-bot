@@ -26,7 +26,6 @@ def get_requested_reviewers(repository: str, pull_request_number: str) -> List[s
     assert gh_api_response.status_code == 200, "Bad response from GitHub requested reviewers API."
     
     response_dict: Dict[List[Dict]] = gh_api_response.json()
-    print(f"requested reviewers: {response_dict}")
 
     return [
         reviewer.get("login")
@@ -52,7 +51,6 @@ def get_reviewer_approvals(repository: str, pull_request_number: str) -> Dict[st
     assert gh_api_response.status_code == 200, "Bad response from GitHub reviews API."
     
     response_list: List[Dict] = gh_api_response.json()
-    print(f"review approvals: {response_list}")
 
     # get latest review status from each reviewer
     # note: reviews are returned in chronological order
@@ -85,7 +83,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     # get requested reviewers
-    requested_reviewers: List[str] = get_reviewer_approvals(
+    requested_reviewers: List[str] = get_requested_reviewers(
         args.repository,
         args.pull_request_number,
     )
