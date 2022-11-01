@@ -75,7 +75,7 @@ runs:
             echo "Attempting fast-forward merge."
             HEAD_REF='${{ github.event.pull_request.head.ref }}'; \
             BASE_REF='${{ github.event.pull_request.base.ref }}'; \
-            git fetch && \
+            git fetch --all && \
             git checkout $BASE_REF && \
             git pull && \
             git merge --ff-only origin/$HEAD_REF && \
