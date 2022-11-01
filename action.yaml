@@ -68,9 +68,14 @@ runs:
 
     # merge PR using merge type
     - run: |
+        if [ "${{ github.event.pull_request.mergeable }}" != "true" ]; then
+          echo "Pull request is not mergeable -- failing."
+          exit 1
+        fi
+
         case "${{ inputs.merge_type }}" in
           "fast-forward")
-            echo "Performing fast-forward merge."
+            echo "Attempting fast-forward merge."
             ;;
           "merge")
             echo "Performing merge."
