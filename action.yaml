@@ -80,9 +80,9 @@ runs:
             echo "Attempting fast-forward merge."
             HEAD_REF='${{ github.event.pull_request.head.ref }}'; \
             BASE_REF='${{ github.event.pull_request.base.ref }}'; \
+            git fetch && \
             git checkout $BASE_REF && \
             git pull && \
-            git fetch origin $HEAD_REF && \
             git merge --ff-only origin/$HEAD_REF && \
             git push
             ;;
