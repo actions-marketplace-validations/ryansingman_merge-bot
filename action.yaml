@@ -31,6 +31,8 @@ runs:
   using: composite
 
   steps:
+    - uses: actions/checkout@v3
+
     - run: |
         python $GITHUB_ACTION_PATH/merge_bot/check_blocking_label.py \
         --blocking-label ${{ inputs.blocking_label }} \
