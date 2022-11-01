@@ -58,10 +58,13 @@ def get_reviewer_approvals(repository: str, pull_request_number: str) -> Dict[st
     for review in response_list:
         approved: bool = review.get("state") == REVIEW_APPROVED
         reviewer: str = review.get("user").get("login")
-        if not approved:
-            print(f"No approval by reviewer: {reviewer}")
 
-        reviews_by_reviewer[review.get("user").get("login")] = approved
+        reviews_by_reviewer[reviewer] = approved
+
+    # log all reviewers who haven't approved
+    for reviewer, approval in reviews_by_reviewer.items():
+        if not approval:
+            print(f"Non-approving review by reviewer {reviewer}.")
 
     return reviews_by_reviewer
 
